@@ -29,12 +29,19 @@ class ImageFadeContainerView(ctx:Context, var bitmap1: Bitmap, var bitmap2:Bitma
         }
         fun draw(canvas:Canvas,paint:Paint) {
             canvas.save()
-            canvas.translate(w/2,w/2)
+            canvas.translate(w/2,h/2)
+            canvas.save()
             val path = Path()
-            path.addRect(RectF( -w/2, -w/2, -w/2+w*state.scale, w/2),Path.Direction.CW)
+            path.addRect(RectF( -w/2, -w/2, -w/2+w*(1-state.scale), w/2),Path.Direction.CW)
+            canvas.clipPath(path)
             canvas.drawBitmap(bitmap1, -w/2, -w/2,paint)
-            path.addRect(RectF(w/2 - w*state.scale, -w/2, w/2, w),Path.Direction.CW)
+            canvas.restore()
+            canvas.save()
+            val path1 = Path()
+            path1.addRect(RectF(w/2 - w*state.scale, -w/2, w/2, w/2),Path.Direction.CW)
+            canvas.clipPath(path1)
             canvas.drawBitmap(bitmap2, -w/2, -w/2, paint)
+            canvas.restore()
             canvas.restore()
         }
         fun update(stopcb:(Float)->Unit) {
@@ -100,7 +107,7 @@ class ImageFadeContainerView(ctx:Context, var bitmap1: Bitmap, var bitmap2:Bitma
         }
         fun start() {
             if(!animated) {
-                animated = false
+                animated = true
                 view.postInvalidate()
             }
         }
