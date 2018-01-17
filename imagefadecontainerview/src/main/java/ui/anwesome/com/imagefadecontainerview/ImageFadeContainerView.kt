@@ -6,7 +6,7 @@ package ui.anwesome.com.imagefadecontainerview
 import android.view.*
 import android.content.*
 import android.graphics.*
-class ImageFadeContainerView(ctx:Context):View(ctx) {
+class ImageFadeContainerView(ctx:Context, var bitmap1: Bitmap, var bitmap2:Bitmap):View(ctx) {
     override fun onDraw(canvas:Canvas) {
 
     }
@@ -17,5 +17,27 @@ class ImageFadeContainerView(ctx:Context):View(ctx) {
             }
         }
         return true
+    }
+    data class ImageFadeContainer(var bitmap1:Bitmap,var bitmap2:Bitmap, var w:Float, var h:Float) {
+        init {
+            bitmap1 = Bitmap.createScaledBitmap(bitmap1, w.toInt(), w.toInt(), true)
+            bitmap2 = Bitmap.createScaledBitmap(bitmap2, w.toInt(), w.toInt(), true)
+        }
+        fun draw(canvas:Canvas,paint:Paint) {
+            canvas.save()
+            canvas.translate(w/2,w/2)
+            val path = Path()
+            path.addRect(RectF( -w/2, -w/2, -w/2+w, w/2),Path.Direction.CW)
+            canvas.drawBitmap(bitmap1, -w/2, -w/2,paint)
+            path.addRect(RectF(w/2 - w, -w/2, w/2, w),Path.Direction.CW)
+            canvas.drawBitmap(bitmap2, -w/2, -w/2, paint)
+            canvas.restore()
+        }
+        fun update(stopcb:(Float)->Unit) {
+
+        }
+        fun startUpdating(startcb:()->Unit) {
+
+        }
     }
 }
