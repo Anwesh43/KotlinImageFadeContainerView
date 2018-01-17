@@ -60,17 +60,26 @@ class ImageFadeContainerView(ctx:Context, var bitmap1: Bitmap, var bitmap2:Bitma
     }
     data class ImageFadeContainerRenderer(var view:ImageFadeContainerView, var time:Int = 0) {
         var imageContainer:ImageFadeContainer?=null
+        val animator = ImageFadeContainerAnimator(view)
         fun render(canvas:Canvas, paint:Paint) {
             if (time == 0) {
                 val w = canvas.width.toFloat()
                 val h = canvas.height.toFloat()
                 imageContainer = ImageFadeContainer(view.bitmap1,view.bitmap2,w,h)
             }
+            canvas.drawColor(Color.parseColor("#212121"))
             imageContainer?.draw(canvas,paint)
             time++
+            animator.animate {
+                imageContainer?.update {
+                    animator.stop()
+                }
+            }
         }
         fun handleTap() {
-
+            imageContainer?.startUpdating {
+                animator.start()
+            }
         }
     }
     data class ImageFadeContainerAnimator(var view:ImageFadeContainerView,var animated:Boolean = false) {
