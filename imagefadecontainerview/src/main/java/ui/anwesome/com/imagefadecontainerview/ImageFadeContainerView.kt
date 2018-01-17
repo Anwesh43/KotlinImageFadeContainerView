@@ -3,17 +3,20 @@ package ui.anwesome.com.imagefadecontainerview
 /**
  * Created by anweshmishra on 18/01/18.
  */
+import android.app.Activity
 import android.view.*
 import android.content.*
 import android.graphics.*
 class ImageFadeContainerView(ctx:Context, var bitmap1: Bitmap, var bitmap2:Bitmap):View(ctx) {
+    val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+    val renderer = ImageFadeContainerRenderer(this)
     override fun onDraw(canvas:Canvas) {
-
+        renderer.render(canvas,paint)
     }
     override fun onTouchEvent(event:MotionEvent):Boolean {
         when(event.action) {
             MotionEvent.ACTION_DOWN -> {
-
+                renderer.handleTap()
             }
         }
         return true
@@ -105,6 +108,13 @@ class ImageFadeContainerView(ctx:Context, var bitmap1: Bitmap, var bitmap2:Bitma
             if(animated) {
                 animated = false
             }
+        }
+    }
+    companion object {
+        fun create(activity:Activity,bitmap1:Bitmap,bitmap2:Bitmap):ImageFadeContainerView {
+            val view = ImageFadeContainerView(activity,bitmap1,bitmap2)
+            activity.setContentView(view)
+            return view
         }
     }
 }
