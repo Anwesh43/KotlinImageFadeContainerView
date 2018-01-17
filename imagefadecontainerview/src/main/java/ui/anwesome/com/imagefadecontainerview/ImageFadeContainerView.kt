@@ -58,4 +58,19 @@ class ImageFadeContainerView(ctx:Context, var bitmap1: Bitmap, var bitmap2:Bitma
             }
         }
     }
+    data class ImageFadeContainerRenderer(var view:ImageFadeContainerView, var time:Int = 0) {
+        var imageContainer:ImageFadeContainer?=null
+        fun render(canvas:Canvas, paint:Paint) {
+            if (time == 0) {
+                val w = canvas.width.toFloat()
+                val h = canvas.height.toFloat()
+                imageContainer = ImageFadeContainer(view.bitmap1,view.bitmap2,w,h)
+            }
+            imageContainer?.draw(canvas,paint)
+            time++
+        }
+        fun handleTap() {
+
+        }
+    }
 }
