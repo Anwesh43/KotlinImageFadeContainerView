@@ -73,4 +73,29 @@ class ImageFadeContainerView(ctx:Context, var bitmap1: Bitmap, var bitmap2:Bitma
 
         }
     }
+    data class ImageFadeContainerAnimator(var view:ImageFadeContainerView,var animated:Boolean = false) {
+        fun animate(updatecb:()->Unit) {
+            if(animated) {
+                updatecb()
+                try {
+                    Thread.sleep(50)
+                    view.invalidate()
+                }
+                catch(ex:Exception) {
+
+                }
+            }
+        }
+        fun start() {
+            if(!animated) {
+                animated = false
+                view.postInvalidate()
+            }
+        }
+        fun stop() {
+            if(animated) {
+                animated = false
+            }
+        }
+    }
 }
