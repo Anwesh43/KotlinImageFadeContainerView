@@ -10,8 +10,12 @@ import android.graphics.*
 class ImageFadeContainerView(ctx:Context, var bitmap1: Bitmap, var bitmap2:Bitmap):View(ctx) {
     val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     val renderer = ImageFadeContainerRenderer(this)
+    var imageFadeContainerListener:ImageFadeContainerListener ?= null
     override fun onDraw(canvas:Canvas) {
         renderer.render(canvas,paint)
+    }
+    fun addImageFadeContainerListener(image1ShownListener: () -> Unit,image2ShownListener: () -> Unit) {
+        imageFadeContainerListener = ImageFadeContainerListener(image1ShownListener,image2ShownListener)
     }
     override fun onTouchEvent(event:MotionEvent):Boolean {
         when(event.action) {
@@ -83,6 +87,10 @@ class ImageFadeContainerView(ctx:Context, var bitmap1: Bitmap, var bitmap2:Bitma
             animator.animate {
                 imageContainer?.update {
                     animator.stop()
+                    when(it) {
+                        0f -> view.imageFadeContainerListener?.image1ShownListener?.invoke()
+                        1f -> view.imageFadeContainerListener?.image2ShownListener?.invoke()
+                    }
                 }
             }
         }
@@ -124,4 +132,5 @@ class ImageFadeContainerView(ctx:Context, var bitmap1: Bitmap, var bitmap2:Bitma
             return view
         }
     }
+    data class ImageFadeContainerListener(var image1ShownListener:()->Unit,var image2ShownListener:()->Unit)
 }
